@@ -25,12 +25,19 @@ public class Assignment3 {
 
   static int storeInArrayLists(ResultSet resultSet,
                                ArrayList nameList,
-                               ArrayList brandList) {
+                               ArrayList carList) {
+    String fullname;
+    String color;
+    String brand;
     int resultSize = 0;
     try {
       while (resultSet.next()) {
-        nameList.add(resultSet.getString("firstname"));
-        brandList.add(resultSet.getString("brand"));
+        fullname = resultSet.getString("firstname") + " " +
+                   resultSet.getString("lastname");
+        color =    resultSet.getString("color");
+        brand =    resultSet.getString("brand");
+        nameList.add(fullname);
+        carList.add(color.toLowerCase() + " " + brand);
         resultSize++;
       }
     } catch (Exception e) {
@@ -43,19 +50,27 @@ public class Assignment3 {
     Connection conn             = getConnection();
     Statement statement         = conn.createStatement();
     ArrayList<String> nameList  = new ArrayList<>();
-    ArrayList<String> brandList = new ArrayList<>();
+    ArrayList<String> carList   = new ArrayList<>();
 
     ResultSet resultSet = statement.executeQuery(
-                            "SELECT firstname, brand " +
+                            "SELECT firstname, lastname, brand, color " +
                             "FROM   owners, people, cars " +
                             "WHERE  owners.person_id = people.person_id " +
                             "AND    owners.car_id = cars.car_id");
 
-    int resultSize = storeInArrayLists(resultSet, nameList, brandList);
+    int resultSize = storeInArrayLists(resultSet, nameList, carList);
 
     for (int i = 0; i < resultSize; i++) {
-      System.out.println(nameList.get(i) + " äger en " + brandList.get(i));
+      System.out.println(nameList.get(i) + " owns a " + carList.get(i));
     }
+
+    /*
+    Connected to database!
+    Carl Dolk owns a red Audi
+    Anna Bolt owns a green Ford
+    Erik Fram owns a blue Saab
+    Gina Hult owns a black Volvo
+    */
   }
 
 }
